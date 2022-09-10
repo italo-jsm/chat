@@ -1,23 +1,17 @@
 package db
 
 import (
+	"chat/config"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
 )
-  
-  const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "mysecretpassword"
-	dbname   = "postgres"
-  )
 
   func ConnectDatabase() *sql.DB{
+	conf := config.GetInstance()
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
     "password=%s dbname=%s sslmode=disable",
-    host, port, user, password, dbname)
+    conf.Database.Host, conf.Database.Port, conf.Database.User, conf.Database.Password, conf.Database.Dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"chat/domain"
-	"chat/repository"
+	"chat/service"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -19,7 +19,6 @@ func (messageController *MessageController) SaveMessage(w http.ResponseWriter, r
 
 	message := domain.Message{}
 	json.Unmarshal(reqBody, &message)
-	rep := repository.Messagerepository{}
-	rep.SaveMessage(message)
+	service.HandleMessage(message)
 	w.Write([]byte(http.StatusText(200)))
 }
