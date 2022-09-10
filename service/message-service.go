@@ -1,7 +1,7 @@
 package service
 
 import (
-	"chat/config"
+	//"chat/config"
 	"chat/domain"
 	"chat/repository"
 
@@ -15,8 +15,8 @@ func HandleMessage(message domain.Message){
 }
 
 func notifyMessageReceived(message domain.Message){
-	conf := config.GetInstance()
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": conf.Kafka.Host})
+	//conf := config.GetInstance()
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
 	if err != nil {
 		panic(err)
 	}
@@ -29,4 +29,5 @@ func notifyMessageReceived(message domain.Message){
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          []byte(message.ReceiverId),
 	}, nil)
+	p.Flush(5000)
 }
