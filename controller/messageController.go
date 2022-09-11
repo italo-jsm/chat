@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type MessageController struct{}
@@ -21,4 +23,8 @@ func (messageController *MessageController) SaveMessage(w http.ResponseWriter, r
 	json.Unmarshal(reqBody, &message)
 	service.HandleMessage(message)
 	w.Write([]byte(http.StatusText(200)))
+}
+
+func (MessageController *MessageController) GetUnreadMessages(w http.ResponseWriter, r *http.Request){
+	json.NewEncoder(w).Encode(service.FindUnreadMessages(mux.Vars(r)["userId"]))
 }

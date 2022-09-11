@@ -17,5 +17,6 @@ func CreateRoutes() *mux.Router{
 		userController.SaveUser(w, r)
 	}).Methods("POST")
 	router.HandleFunc("/users/{userId}", userController.GetOneUser).Methods("GET")
+	router.HandleFunc("/messages/unread/{userId}", messageController.GetUnreadMessages).Methods("GET")
 	return router
 }

@@ -3,7 +3,9 @@ CREATE TABLE message (
 	payload VARCHAR NULL,
 	senderId VARCHAR NULL,
 	receiverId VARCHAR null,
-	moment VARCHAR NULL
+	moment VARCHAR NULL,
+    consumed BOOLEAN NOT NULL,
+    consume_moment VARCHAR NULL
 );
 
 CREATE TABLE chat_user (
