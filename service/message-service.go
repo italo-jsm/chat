@@ -2,6 +2,7 @@ package service
 
 import (
 	//"chat/config"
+	"chat/config"
 	"chat/domain"
 	"chat/repository"
 	"time"
@@ -13,7 +14,9 @@ func HandleMessage(message domain.Message){
 	rep := repository.Messagerepository{}
 	message.Consumed = false
 	rep.SaveMessage(message)
-	notifyMessageReceived(message)
+	if config.GetInstance().NotifyEnabled{
+		notifyMessageReceived(message)
+	}
 }
 
 func notifyMessageReceived(message domain.Message){

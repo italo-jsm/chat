@@ -11,6 +11,7 @@ var lock = &sync.Mutex{}
 type Configuration struct {
     Database DatabaseConfiguration `json:"database"`
     Kafka KafkaConfiguration `json:"kafka"`
+    NotifyEnabled bool
 }
 
 var configuration *Configuration
