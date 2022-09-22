@@ -1,19 +1,31 @@
 package service
 
 import (
-	//"chat/config"
 	"chat/config"
 	"chat/domain"
+	"chat/mocking"
 	"chat/repository"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
+type MessageService struct{
+	Messagerepository repository.MessagerepositoryInterface
+}
 
-func HandleMessage(message domain.Message){
-	rep := repository.Messagerepository{}
+func NewMessageService(mockRepository bool) (messageService *MessageService){
+	newService := MessageService{}
+	if(mockRepository){
+		newService.Messagerepository = &mocking.MockMessageRepository{}
+	}else{
+		newService.Messagerepository = &repository.Messagerepository{}
+	}
+	return &newService
+}
+
+func (messageService *MessageService) HandleMessage(message domain.Message){
 	message.Consumed = false
-	rep.SaveMessage(message)
+	messageService.Messagerepository.SaveMessage(message)
 	if config.GetInstance().NotifyEnabled{
 		notifyMessageReceived(message)
 	}
@@ -36,14 +48,14 @@ func notifyMessageReceived(message domain.Message){
 	p.Flush(1)
 }
 
-func FindUnreadMessages(userId string) []domain.Message{
-	rep :=repository.Messagerepository{}
-	unread := rep.FindUnreadMessages(userId)
+func (messageService *MessageService) FindUnreadMessages(userId string) []domain.Message{
+
+	unread := messageService.Messagerepository.FindUnreadMessages(userId)
 	var messagesToReturn []domain.Message
 	for _, m := range unread{
 		m.ConsumeMoment = time.Now()
 		m.Consumed = true
-		rep.UpdateMessage(m)
+		messageService.Messagerepository.UpdateMessage(m)
 		messagesToReturn = append(messagesToReturn, m)
 	}
 	return messagesToReturn

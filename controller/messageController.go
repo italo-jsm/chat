@@ -14,17 +14,18 @@ type MessageController struct{}
 
 func (messageController *MessageController) SaveMessage(w http.ResponseWriter, r *http.Request){
 	reqBody, err := ioutil.ReadAll(r.Body)
-
+	messageService := service.NewMessageService(false)
 	if err != nil {
 		panic(err.Error)
 	}
 
 	message := domain.Message{}
 	json.Unmarshal(reqBody, &message)
-	service.HandleMessage(message)
+	messageService.HandleMessage(message)
 	w.Write([]byte(http.StatusText(200)))
 }
 
 func (MessageController *MessageController) GetUnreadMessages(w http.ResponseWriter, r *http.Request){
-	json.NewEncoder(w).Encode(service.FindUnreadMessages(mux.Vars(r)["userId"]))
+	messageService := service.NewMessageService(false)
+	json.NewEncoder(w).Encode(messageService.FindUnreadMessages(mux.Vars(r)["userId"]))
 }
